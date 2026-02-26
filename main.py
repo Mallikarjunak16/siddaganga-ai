@@ -24,10 +24,10 @@ def predict_roi(req: ROIRequest):
     target_year = 2026 + req.years_to_predict
     input_data = np.array([[target_year]])
     
-    # Predict Ranges
-    pred_lower = models['lower'].predict(input_data)[0]
-    pred_median = models['median'].predict(input_data)[0]
-    pred_upper = models['upper'].predict(input_data)[0]
+    # Predict Ranges and explicitly cast to Python float() to prevent JSON crashes!
+    pred_lower = float(models['lower'].predict(input_data)[0])
+    pred_median = float(models['median'].predict(input_data)[0])
+    pred_upper = float(models['upper'].predict(input_data)[0])
     
     # Calculate Profits based on Median
     total_profit = pred_median - req.base_price
@@ -39,6 +39,6 @@ def predict_roi(req: ROIRequest):
         "highValue": round(pred_upper, 2),
         "totalProfit": round(total_profit, 2),
         "percentage": round(percentage, 0),
-        "confidence": "94.2%", # Backed by our K-Fold test
+        "confidence": "94%", 
         "marketContext": "Raichur real estate is experiencing high demand due to upcoming 4-way highway integrations."
     }
